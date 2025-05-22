@@ -1,8 +1,8 @@
-AI Customer Service Assistant
-🚀 Overview
+# AI Customer Service Assistant 
+### Overview
 This project implements a FastAPI service that acts as an intelligent customer service assistant. It leverages a Large Language Model (LLM) framework (LangChain with Hugging Face models) to classify user intent and provide appropriate responses. Key functionalities include answering product-related questions by retrieving information from provided documentation and extracting structured details for support tickets using AI-driven field mapping.
 
-✨ Features
+### Features
 Unified API Endpoint: A single HTTP POST endpoint (/inquiries/) to handle all user requests.
 
 AI-Powered Intent Classification: Automatically determines if a user's query is a product question, support ticket request, technical issue, general greeting, order status inquiry, or return/refund query.
@@ -13,7 +13,7 @@ AI-Driven Field Mapping: Extracts key information (subject, description, product
 
 Robust Error Handling: Provides friendly fallback messages in case of issues with LLM processing or data retrieval.
 
-🛠️ Technologies Used
+### Technologies Used
 FastAPI: Python web framework for building the API.
 
 LangChain: Framework for developing applications powered by LLMs.
@@ -32,19 +32,17 @@ Uvicorn: ASGI server for running the FastAPI application.
 
 Pydantic: Data validation and settings management (used by FastAPI).
 
-📦 Project Structure
-.
-├── main.py                     # FastAPI application entry point, handles API routes and orchestrates logic
-├── llm_logic.py                # Contains core LLM interactions (intent classification, Q&A, ticket extraction)
-├── document_processor.py       # Handles document loading, text chunking, embedding, and vector store creation
-├── requirements.txt            # Lists all Python dependencies for easy installation
-├── Intoleads Task.pdf          # Example product documentation (or similar PDFs used for RAG)
-├── README.md                   # This file, providing project overview and instructions
-├── .gitignore                  # Specifies files and directories to be ignored by Git (e.g., virtual environments, cache)
-└── assets/                     # Folder for static assets like images
-    └── images/                 # Stores screenshots and other images
-
-⚙️ Setup and Installation
+## Project Structure
+* `main.py` - FastAPI application entry point, handles API routes and orchestrates logic
+* `llm_logic.py` - Contains core LLM interactions (intent classification, Q&A, ticket extraction)
+* `document_processor.py` - Handles document loading, text chunking, embedding, and vector store creation
+* `requirements.txt` - Lists all Python dependencies for easy installation
+* `Intoleads Task.pdf` - Example product documentation (or similar PDFs used for RAG)
+* `README.md` - This file, providing project overview and instructions
+* `.gitignore` - Specifies files and directories to be ignored by Git (e.g., virtual environments, cache)
+* `assets/`
+    * `images/` - Stores screenshots and other images
+### Setup and Installation
 Prerequisites
 Python 3.9+
 
@@ -68,7 +66,7 @@ Install dependencies:
 
 pip install -r requirements.txt
 
-(Ensure your requirements.txt was generated correctly and contains all necessary libraries.)
+(Please make sure your requirements.txt was generated correctly and contains all necessary libraries.)
 
 Prepare Product Documents:
 
@@ -91,7 +89,7 @@ Access FastAPI Docs (Optional):
 
 Once running, you can access the interactive API documentation (Swagger UI) at http://localhost:8000/docs to test the endpoint directly from your browser.
 
-🧪 Usage Examples
+## Usage Examples
 The service exposes a single POST endpoint /inquiries/ for all interactions.
 
 Request Body (UserInput Model)
@@ -121,7 +119,7 @@ Response Body (AnswerResponse Model)
   } (optional)
 }
 
-Example Queries
+#### Example Queries
 You can use curl commands in your terminal or the interactive Swagger UI (http://localhost:8000/docs) to send requests.
 
 1. Product Question
@@ -136,14 +134,15 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Accept: application/json" \
      -H "Content-Type: application/json" \
      -d '{
-           "query": "What is the processor in the Intoleads ProBook?",
-           "session_id": "product_query_session"
+           "query": "What is the processor in the Intoleads ProBook?"
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss1.png)
 
 
 Swagger UI Server Response:
+![Product Question Request](assets/images/op_ss2.png)
 
 
 2. Return/Refund Query
@@ -159,13 +158,14 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Content-Type: application/json" \
      -d '{
            "query": "I need to return a product I bought last week. What\'s the process?",
-           "session_id": "return_query_session"
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss3.png)
 
 
 Swagger UI Server Response:
+![Product Question Request](assets/images/op_ss4.png)
 
 
 3. Technical Issue / Support Ticket Request
@@ -180,13 +180,14 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Accept: application/json" \
      -H "Content-Type: application/json" \
      -d '{
-           "query": "My Intoleads ProBook screen is flickering badly, can\'t see anything and its urgent",
-           "session_id": "technical_issue_session"
+           "query": "My Intoleads ProBook screen is flickering badly, can\'t see anything and its urgent"
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss5.png)
 
 
 Swagger UI Server Response (showing extracted ticket info):
+![Product Question Request](assets/images/op_ss6.png)
 
 
