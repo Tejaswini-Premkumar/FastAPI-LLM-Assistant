@@ -141,9 +141,11 @@ curl -X POST "http://localhost:8000/inquiries/" \
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss1.png)
 
 
 Swagger UI Server Response:
+![Product Question Request](assets/images/op_ss2.png)
 
 
 2. Return/Refund Query
@@ -163,9 +165,11 @@ curl -X POST "http://localhost:8000/inquiries/" \
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss3.png)
 
 
 Swagger UI Server Response:
+![Product Question Request](assets/images/op_ss4.png)
 
 
 3. Technical Issue / Support Ticket Request
@@ -185,8 +189,10 @@ curl -X POST "http://localhost:8000/inquiries/" \
          }'
 
 Swagger UI Request Body:
+![Product Question Request](assets/images/op_ss5.png)
 
 
 Swagger UI Server Response (showing extracted ticket info):
+![Product Question Request](assets/images/op_ss6.png)
 
 
