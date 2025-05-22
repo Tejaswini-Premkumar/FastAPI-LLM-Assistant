@@ -2,7 +2,7 @@
 ### Overview
 This project implements a FastAPI service that acts as an intelligent customer service assistant. It leverages a Large Language Model (LLM) framework (LangChain with Hugging Face models) to classify user intent and provide appropriate responses. Key functionalities include answering product-related questions by retrieving information from provided documentation and extracting structured details for support tickets using AI-driven field mapping.
 
-###Features
+### Features
 Unified API Endpoint: A single HTTP POST endpoint (/inquiries/) to handle all user requests.
 
 AI-Powered Intent Classification: Automatically determines if a user's query is a product question, support ticket request, technical issue, general greeting, order status inquiry, or return/refund query.
@@ -121,7 +121,7 @@ Response Body (AnswerResponse Model)
   } (optional)
 }
 
-Example Queries
+#### Example Queries
 You can use curl commands in your terminal or the interactive Swagger UI (http://localhost:8000/docs) to send requests.
 
 1. Product Question
