@@ -3,41 +3,35 @@
 This project implements a FastAPI service that acts as an intelligent customer service assistant. It leverages a Large Language Model (LLM) framework (LangChain with Hugging Face models) to classify user intent and provide appropriate responses. Key functionalities include answering product-related questions by retrieving information from provided documentation and extracting structured details for support tickets using AI-driven field mapping.
 
 ### Features
-Unified API Endpoint: A single HTTP POST endpoint (/inquiries/) to handle all user requests.
+* **Unified API Endpoint:** A single HTTP POST endpoint (`/inquiries/`) to handle all user requests.
+* **AI-Powered Intent Classification:** Automatically determines if a user's query is a product question, support ticket request, technical issue, general greeting, order status inquiry, or return/refund query.
+* **Retrieval Augmented Generation (RAG):** Answers product questions by retrieving relevant information from provided documentation.
+* **AI-Driven Field Mapping:** Extracts key information (subject, description, product name, user ID, priority) from support ticket requests for ticket creation.
+* **Ticket Persistence:** **Successfully saves extracted ticket information to an SQLite database (`tickets.db`) using SQLAlchemy.**
+* **Robust Error Handling:** Provides friendly fallback messages in case of issues with LLM processing or data retrieval.
 
-AI-Powered Intent Classification: Automatically determines if a user's query is a product question, support ticket request, technical issue, general greeting, order status inquiry, or return/refund query.
-
-Retrieval Augmented Generation (RAG): Answers product questions by retrieving relevant information from provided documentation.
-
-AI-Driven Field Mapping: Extracts key information (subject, description, product name, user ID, priority) from support ticket requests for ticket creation.
-
-Robust Error Handling: Provides friendly fallback messages in case of issues with LLM processing or data retrieval.
 
 ### Technologies Used
-FastAPI: Python web framework for building the API.
-
-LangChain: Framework for developing applications powered by LLMs.
-
-Hugging Face Transformers: Used for:
-
-Zero-Shot Classification pipeline (facebook/bart-large-mnli) for intent classification.
-
-Generative LLM (google/flan-t5-base) for question answering and information extraction.
-
-ChromaDB: Vector store for efficient storage and retrieval of document embeddings.
-
-PyTorch: Underlying deep learning library for Hugging Face models.
-
-Uvicorn: ASGI server for running the FastAPI application.
-
-Pydantic: Data validation and settings management (used by FastAPI).
+* FastAPI: Python web framework for building the API.
+* LangChain: Framework for developing applications powered by LLMs.
+* Hugging Face Transformers: Used for:
+   * Zero-Shot Classification pipeline (facebook/bart-large-mnli) for intent classification.
+   * Generative LLM (google/flan-t5-base) for question answering and information extraction.
+* ChromaDB: Vector store for efficient storage and retrieval of document embeddings.
+* PyTorch: Underlying deep learning library for Hugging Face models.
+* Uvicorn: ASGI server for running the FastAPI application.
+* Pydantic: Data validation and settings management (used by FastAPI).
+* SQLAlchemy: Python SQL toolkit and Object-Relational Mapper (ORM) for database interaction.
+* SQLite: A lightweight, file-based SQL database used for ticket persistence.
 
 ## Project Structure
 * `main.py` - FastAPI application entry point, handles API routes and orchestrates logic
 * `llm_logic.py` - Contains core LLM interactions (intent classification, Q&A, ticket extraction)
+* `database.py` - Defines SQLAlchemy models and database connection for ticket persistence
 * `document_processor.py` - Handles document loading, text chunking, embedding, and vector store creation
 * `requirements.txt` - Lists all Python dependencies for easy installation
 * `Intoleads Task.pdf` - Example product documentation (or similar PDFs used for RAG)
+* * `tickets.db` - SQLite database file where tickets are stored (generated on first run)
 * `README.md` - This file, providing project overview and instructions
 * `.gitignore` - Specifies files and directories to be ignored by Git (e.g., virtual environments, cache)
 * `assets/`
