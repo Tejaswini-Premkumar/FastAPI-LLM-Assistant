@@ -1,4 +1,4 @@
-# AI Customer Service Assistant /n
+# AI Customer Service Assistant 
 ### Overview
 This project implements a FastAPI service that acts as an intelligent customer service assistant. It leverages a Large Language Model (LLM) framework (LangChain with Hugging Face models) to classify user intent and provide appropriate responses. Key functionalities include answering product-related questions by retrieving information from provided documentation and extracting structured details for support tickets using AI-driven field mapping.
 
