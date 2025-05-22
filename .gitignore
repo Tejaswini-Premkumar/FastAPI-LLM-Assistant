@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+build/
+dist/
+venv/
+env/
+
+# LangChain/ChromaDB specific (if applicable)
+.chroma/ # If ChromaDB creates a local directory for persistence
+*.pt     # PyTorch model files (if downloaded locally)
+
+# IDEs
+.vscode/ # VS Code
+.idea/   # IntelliJ / PyCharm
+
+# Environment variables
+.env
+
+# Any sensitive data files you don't want to commit
+# e.g., if you had a local database file: instance/
