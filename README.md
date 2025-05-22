@@ -1,8 +1,8 @@
-AI Customer Service Assistant
-🚀 Overview
+# AI Customer Service Assistant /n
+### Overview
 This project implements a FastAPI service that acts as an intelligent customer service assistant. It leverages a Large Language Model (LLM) framework (LangChain with Hugging Face models) to classify user intent and provide appropriate responses. Key functionalities include answering product-related questions by retrieving information from provided documentation and extracting structured details for support tickets using AI-driven field mapping.
 
-✨ Features
+###Features
 Unified API Endpoint: A single HTTP POST endpoint (/inquiries/) to handle all user requests.
 
 AI-Powered Intent Classification: Automatically determines if a user's query is a product question, support ticket request, technical issue, general greeting, order status inquiry, or return/refund query.
@@ -13,7 +13,7 @@ AI-Driven Field Mapping: Extracts key information (subject, description, product
 
 Robust Error Handling: Provides friendly fallback messages in case of issues with LLM processing or data retrieval.
 
-🛠️ Technologies Used
+### Technologies Used
 FastAPI: Python web framework for building the API.
 
 LangChain: Framework for developing applications powered by LLMs.
@@ -32,7 +32,7 @@ Uvicorn: ASGI server for running the FastAPI application.
 
 Pydantic: Data validation and settings management (used by FastAPI).
 
-📦 Project Structure
+#### Project Structure
 .
 ├── main.py                     # FastAPI application entry point, handles API routes and orchestrates logic
 ├── llm_logic.py                # Contains core LLM interactions (intent classification, Q&A, ticket extraction)
@@ -44,7 +44,7 @@ Pydantic: Data validation and settings management (used by FastAPI).
 └── assets/                     # Folder for static assets like images
     └── images/                 # Stores screenshots and other images
 
-⚙️ Setup and Installation
+### Setup and Installation
 Prerequisites
 Python 3.9+
 
@@ -91,7 +91,7 @@ Access FastAPI Docs (Optional):
 
 Once running, you can access the interactive API documentation (Swagger UI) at http://localhost:8000/docs to test the endpoint directly from your browser.
 
-🧪 Usage Examples
+## Usage Examples
 The service exposes a single POST endpoint /inquiries/ for all interactions.
 
 Request Body (UserInput Model)
