@@ -32,19 +32,16 @@ Uvicorn: ASGI server for running the FastAPI application.
 
 Pydantic: Data validation and settings management (used by FastAPI).
 
-#### Project Structure
-'''
-.
-├── main.py                     # FastAPI application entry point, handles API routes and orchestrates logic
-├── llm_logic.py                # Contains core LLM interactions (intent classification, Q&A, ticket extraction)
-├── document_processor.py       # Handles document loading, text chunking, embedding, and vector store creation
-├── requirements.txt            # Lists all Python dependencies for easy installation
-├── Intoleads Task.pdf          # Example product documentation (or similar PDFs used for RAG)
-├── README.md                   # This file, providing project overview and instructions
-├── .gitignore                  # Specifies files and directories to be ignored by Git (e.g., virtual environments, cache)
-└── assets/                     # Folder for static assets like images
-    └── images/                 # Stores screenshots and other images
-'''
+## Project Structure
+* `main.py` - FastAPI application entry point, handles API routes and orchestrates logic
+* `llm_logic.py` - Contains core LLM interactions (intent classification, Q&A, ticket extraction)
+* `document_processor.py` - Handles document loading, text chunking, embedding, and vector store creation
+* `requirements.txt` - Lists all Python dependencies for easy installation
+* `Intoleads Task.pdf` - Example product documentation (or similar PDFs used for RAG)
+* `README.md` - This file, providing project overview and instructions
+* `.gitignore` - Specifies files and directories to be ignored by Git (e.g., virtual environments, cache)
+* `assets/`
+    * `images/` - Stores screenshots and other images
 ### Setup and Installation
 Prerequisites
 Python 3.9+
