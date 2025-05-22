@@ -68,7 +68,7 @@ Install dependencies:
 
 pip install -r requirements.txt
 
-(Ensure your requirements.txt was generated correctly and contains all necessary libraries.)
+(Please make sure your requirements.txt was generated correctly and contains all necessary libraries.)
 
 Prepare Product Documents:
 
@@ -136,8 +136,7 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Accept: application/json" \
      -H "Content-Type: application/json" \
      -d '{
-           "query": "What is the processor in the Intoleads ProBook?",
-           "session_id": "product_query_session"
+           "query": "What is the processor in the Intoleads ProBook?"
          }'
 
 Swagger UI Request Body:
@@ -161,7 +160,6 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Content-Type: application/json" \
      -d '{
            "query": "I need to return a product I bought last week. What\'s the process?",
-           "session_id": "return_query_session"
          }'
 
 Swagger UI Request Body:
@@ -184,8 +182,7 @@ curl -X POST "http://localhost:8000/inquiries/" \
      -H "Accept: application/json" \
      -H "Content-Type: application/json" \
      -d '{
-           "query": "My Intoleads ProBook screen is flickering badly, can\'t see anything and its urgent",
-           "session_id": "technical_issue_session"
+           "query": "My Intoleads ProBook screen is flickering badly, can\'t see anything and its urgent"
          }'
 
 Swagger UI Request Body:
