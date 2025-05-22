@@ -1,54 +1,47 @@
-from fastapi import FastAPI, HTTPException
+# main.py
+print("--- main.py: Script started ---") # DEBUG PRINT
+
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-from typing import Optional,List, Dict
+from typing import Optional, List, Dict
 from llm_logic import classify_intent, answer_question, extract_ticket_info
+from database import create_db_tables, get_db, Ticket
+from sqlalchemy.orm import Session
+
 app = FastAPI()
+
+@app.on_event("startup")
+def on_startup():
+    print("--- FastAPI Startup Event: Initializing database tables ---") # DEBUG PRINT
+    create_db_tables()
+    print("--- FastAPI Startup Event: Database initialization complete ---") # DEBUG PRINT
+
 class UserInput(BaseModel):
     query: str
-    #session_id: Optional[str] = None
+    # Removed session_id: Optional[str] = None
     additional_data: dict = {}
 
 class AnswerResponse(BaseModel):
     query: str
     intent: str
-    #answer: str
-    #sources: List[str] = [] 
     message: str
     ticket_info: Optional[dict] = None
     answer_info: Optional[dict] = None 
 
 
 @app.post("/inquiries/", response_model=AnswerResponse)
-async def handle_inquiry(user_input: UserInput):
+async def handle_inquiry(user_input: UserInput, db: Session = Depends(get_db)):
     """
-    Handles user inquiries, either answering questions or creating support tickets.
+    Handles user inquiries, classifying intent, and providing answers or routing to support.
     """
-    print(f"Received query: {user_input.query}") # For debugging
-    intent = classify_intent(user_input.query)
-    print(f"Intent classified as: '{intent}'")
-    response_data = {"query": user_input.query, "intent": intent}
-    #"""
-    #Handles user inquiries, managing conversation history, classifying intent,
-    #and providing answers or routing to support.
-    #"""
+    # Removed print(f"--- handle_inquiry: Request received for session {user_input.session_id} ---")
+    print(f"DEBUG: Type of 'db' object received by handle_inquiry: {type(db)}") # DEBUG PRINT
+
     user_query = user_input.query
-    #session_id = user_input.session_id if user_input.session_id else "default_session" # Use a default if not provided
+    # Removed session_id = user_input.session_id if user_input.session_id else "default_session"
 
     print(f"Received query: {user_input.query}")
-    #print(f"Session ID: {session_id}")
-
-    # Get or create conversation memory for the session
-    #if session_id not in conversation_memories:
-    #    print(f"Creating new session memory for ID: {session_id}")
-        # memory_key is the key by which the history will be exposed in the prompt
-    #    conversation_memories[session_id] = ConversationBufferMemory(memory_key="chat_history")
-    
-    #memory = conversation_memories[session_id]
-    
-    # Load current chat history string from memory
-    # memory.load_memory_variables({}) returns {'chat_history': 'Human: ...\nAI: ...'}
-    #chat_history_str = memory.load_memory_variables({})["chat_history"] 
-    #print(f"Current Chat History for {session_id}:\n{chat_history_str if chat_history_str else ' (empty)'}")
+    # Removed print(f"Session ID: {session_id}")
 
     intent = classify_intent(user_input.query)
     print(f"Intent classified as: '{intent}'")
@@ -56,20 +49,31 @@ async def handle_inquiry(user_input: UserInput):
     response_message = ""
     ticket_info = None
     answer_info = None
+
     if intent == "product_question":
         print(f"Intent classified as 'product_question'. Answering: {user_input.query}")
-        answer_info = answer_question(user_input.query)
+        answer_info = answer_question(user_input.query) 
         response_message = answer_info["answer"]
         
-    elif intent == "technical_issue":
-        print(f"Intent classified as 'technical_issue'. Suggesting support.")
-        ticket_info = extract_ticket_info(user_input.model_dump())
-        response_message = "It sounds like a technical issue. I'm routing this to support. Could you provide more details?"
+    elif intent == "technical_issue" or intent == "support_ticket_request":
+        print(f"Intent classified as '{intent}'. Creating ticket for: {user_input.query}")
+        ticket_info_extracted = extract_ticket_info(user_input.model_dump())
+        
+        new_ticket = Ticket(
+            subject=ticket_info_extracted.get("subject", "N/A"),
+            description=ticket_info_extracted.get("description", user_query),
+            product_name=ticket_info_extracted.get("product_name", "N/A"),
+            user_id=ticket_info_extracted.get("user_id", "N/A"),
+            priority=ticket_info_extracted.get("priority", "Medium"),
+            extracted_status=ticket_info_extracted.get("extracted_status", "success")
+        )
+        db.add(new_ticket)
+        db.commit()
+        db.refresh(new_ticket)
 
-    elif intent == "support_ticket_request":
-        print(f"Intent classified as 'support_ticket_request'. Creating ticket for: {user_input.query}")
-        ticket_info = extract_ticket_info(user_input.model_dump())
-        response_message = f"Ticket created with subject: {ticket_info.get('subject', 'Placeholder Subject')}"
+        ticket_info = ticket_info_extracted
+        response_message = f"Ticket #{new_ticket.id} created with subject: {new_ticket.subject}. We will get back to you shortly."
+        print(f"Ticket saved to database: {new_ticket}")
 
     elif intent == "general_greeting":
         print(f"Intent classified as 'general_greeting'. Responding with greeting.")
@@ -87,9 +91,6 @@ async def handle_inquiry(user_input: UserInput):
         print(f"Warning: Unhandled intent '{intent}'. Returning generic response.")
         response_message = "I'm not sure how to handle that request. Could you please rephrase or ask about Intoleads products or services?"
 
-    # Save current interaction to memory
-    #memory.save_context({"input": user_query}, {"output": response_message})
-    
     return AnswerResponse(
         query=user_input.query,
         intent=intent,
@@ -98,8 +99,26 @@ async def handle_inquiry(user_input: UserInput):
         answer_info=answer_info
     )
 
+@app.get("/tickets/", response_model=List[Dict])
+async def get_all_tickets(db: Session = Depends(get_db)):
+    print(f"--- get_all_tickets: Request received ---") # DEBUG PRINT
+    print(f"DEBUG: Type of 'db' object received by get_all_tickets: {type(db)}") # DEBUG PRINT
+    tickets = db.query(Ticket).all()
+    return [
+        {
+            "id": t.id,
+            "subject": t.subject,
+            "description": t.description,
+            "product_name": t.product_name,
+            "user_id": t.user_id,
+            "priority": t.priority,
+            "extracted_status": t.extracted_status,
+            "created_at": t.created_at.isoformat()
+        } for t in tickets
+    ]
+
 
 if __name__ == "__main__":
+    print("--- main.py: Running Uvicorn ---") # DEBUG PRINT
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    
