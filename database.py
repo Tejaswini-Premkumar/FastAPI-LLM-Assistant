@@ -3,13 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-# Define the SQLite database URL
-# This will create a file named 'tickets.db' in your project directory
+
 DATABASE_URL = "sqlite:///./tickets.db"
 
-# Create the SQLAlchemy engine
-# connect_args={"check_same_thread": False} is needed for SQLite with FastAPI
-# because SQLite operates on a single thread by default, and FastAPI uses multiple threads.
+# SQLAlchemy engine
+
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
 # Create a declarative base for our models
@@ -32,18 +30,16 @@ class Ticket(Base):
         # String representation for debugging
         return f"<Ticket(id={self.id}, subject='{self.subject}', priority='{self.priority}')>"
 
-# Create a sessionmaker to produce new Session objects
-# Each Session object is a "staging zone" for objects loaded from the database.
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Function to create all tables defined in Base
+
 def create_db_tables():
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
     print("Database tables created.")
 
-# Dependency for FastAPI to get a database session
-# This function will be called for each request that needs a database session.
+
 def get_db():
     db = SessionLocal()
     try:

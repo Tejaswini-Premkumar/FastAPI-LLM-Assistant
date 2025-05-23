@@ -1,12 +1,12 @@
-from docx import Document as DocxDocument # Rename docx's Document to avoid conflict
+from docx import Document as DocxDocument 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings # Corrected import
-from langchain_community.vectorstores import Chroma # Corrected import
-from langchain_core.documents import Document as LangchainDocument # Alias LangChain's Document
+from langchain_community.embeddings import HuggingFaceEmbeddings 
+from langchain_community.vectorstores import Chroma 
+from langchain_core.documents import Document as LangchainDocument 
 import os
-# Define the path to your document
+# Defineing the path of the document
 DOCUMENT_PATH = "laptop_details_summary.docx"
-# Define the directory for the ChromaDB persistence
+# Defineing the directory for the ChromaDB persistence
 CHROMA_DB_DIR = "chroma_db"
 
 def load_document(file_path: str) -> str:
@@ -39,10 +39,10 @@ def get_embeddings_model():
     """
     Initializes and returns a Hugging Face embeddings model.
     """
-    # Using a common and good quality sentence transformer model
+    # Using sentence transformer model
     model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    model_kwargs = {'device': 'cpu'} # Use 'cuda' if you have an NVIDIA GPU and want to use it
-    encode_kwargs = {'normalize_embeddings': False} # Normalizing embeddings is often good for cosine similarity
+    model_kwargs = {'device': 'cpu'} 
+    encode_kwargs = {'normalize_embeddings': False} # Normalizing embeddings 
 
     embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
@@ -92,6 +92,3 @@ def setup_vector_store():
 # Global variable to hold the vector store instance
 # This will be loaded once when the application starts.
 VECTOR_STORE = setup_vector_store()
-
-# If the document is updated frequently, you might want to call setup_vector_store()
-# again or implement a more robust update mechanism.

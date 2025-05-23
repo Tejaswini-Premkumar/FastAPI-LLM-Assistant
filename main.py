@@ -1,4 +1,3 @@
-# main.py
 print("--- main.py: Script started ---") # DEBUG PRINT
 
 from fastapi import FastAPI, HTTPException, Depends

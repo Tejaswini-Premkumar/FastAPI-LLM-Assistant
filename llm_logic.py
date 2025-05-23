@@ -4,7 +4,7 @@ from langchain_community.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from document_processor import VECTOR_STORE
 import json
-import re # NEW IMPORT: For regular expressions to parse simpler LLM output
+import re 
 
 # Initialize the Hugging Face Zero-Shot Classification pipeline
 try:
@@ -77,7 +77,8 @@ def get_llm_model():
     Initializes and returns a Hugging Face generative LLM for Q&A and extraction.
     """
     try:
-        model_id = "google/flan-t5-base" # Using base model
+        model_id = "google/flan-t5-base" # Using base model instead of small for better performance
+        # model_id = "google/flan-t5-small" # Using small model for faster inference
         qa_tokenizer = AutoTokenizer.from_pretrained(model_id)
         qa_model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
@@ -150,7 +151,6 @@ def answer_question(question: str) -> dict:
         return {"answer": "Apologies, an error occurred while trying to answer your question.", "sources": []}
 
 
-# --- MODIFIED: extract_ticket_info function with simpler prompt and manual parsing ---
 def extract_ticket_info(user_input_dict: dict) -> dict:
     """
     Extracts structured ticket information from the user's input using the LLM.
@@ -164,7 +164,6 @@ def extract_ticket_info(user_input_dict: dict) -> dict:
     if not user_query:
         return {"subject": "No Query Provided", "description": "", "priority": "Medium", "extracted_status": "no_query"}
 
-    # --- UPDATED: extraction_prompt_template for simpler, non-JSON output ---
     extraction_prompt_template = """Extract the following information from the user's request.
 Provide the information in a simple key-value pair format, one per line.
 If a piece of information is not found, state "N/A" for its value.
@@ -220,8 +219,8 @@ Your Output:
         raw_llm_output = extraction_chain.run(user_query)
         print(f"Raw LLM output for ticket extraction: {raw_llm_output}")
 
-        # --- NEW MANUAL PARSING LOGIC ---
-        # Split the output into lines and then parse each line
+        # Process the raw LLM output to extract structured information
+        # Split the output into lines and parse each line
         lines = raw_llm_output.strip().split('\n')
         for line in lines:
             line = line.strip()
@@ -244,30 +243,25 @@ Your Output:
             if extracted_data["description"] == "N/A" and user_query:
                 extracted_data["description"] = user_query
 
-        # Ensure description defaults to full query if LLM didn't provide a specific one
         if extracted_data["description"] == "N/A" or not extracted_data["description"]:
             extracted_data["description"] = user_query
 
-        # If subject is still N/A or a placeholder, use a default from query
         if extracted_data["subject"] == "N/A" or "[name of product]" in extracted_data["subject"].lower():
             extracted_data["subject"] = "Ticket: " + user_query[:50] + ("..." if len(user_query) > 50 else "")
         
-        # Try to infer product name from query if still N/A
         if extracted_data["product_name"] == "N/A":
             query_lower = user_query.lower()
             if "intoleads probook" in query_lower:
                 extracted_data["product_name"] = "Intoleads ProBook"
             elif "intoleads x1 carbon" in query_lower:
                 extracted_data["product_name"] = "Intoleads X1 Carbon"
-            # Add more specific product name checks here if needed
+            #more specific product name checks here if needed
 
-        # Try to infer user ID from query if still N/A
         if extracted_data["user_id"] == "N/A":
             user_id_match = re.search(r'(user id|userid|my id is)\s*(\w+)', user_query, re.IGNORECASE)
             if user_id_match:
                 extracted_data["user_id"] = user_id_match.group(2)
         
-        # Ensure priority is set correctly based on keywords in original query if not extracted
         if extracted_data["priority"] == "Medium": # Only if default Medium from LLM
             query_lower = user_query.lower()
             if "urgent" in query_lower or "critical" in query_lower or "high priority" in query_lower:
@@ -275,14 +269,7 @@ Your Output:
             elif "low priority" in query_lower:
                 extracted_data["priority"] = "Low"
         
-        # Clean up "N/A" values if the LLM outputted them
-        #for key, value in extracted_data.items():
-        #    if value.lower() == "n/a":
-        #        extracted_data[key] = "N/A" # Standardize "N/A" case
-
-        # If subject still N/A, use a default from query
-        #if extracted_data["subject"] == "N/A" and user_query:
-        #     extracted_data["subject"] = "Ticket: " + user_query[:50] + ("..." if len(user_query) > 50 else "")
+        
 
         final_ticket_info = {
             "subject": extracted_data.get("subject", "N/A"),
